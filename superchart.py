@@ -5,11 +5,14 @@ import sys
 import urllib
 import getopt
 import os
-
+from httplib2 import iri2uri
 
 def download_track(url, filename):
     print "Retriveing ", filename
-    urllib.urlretrieve(url, filename)
+    base_idx = url.find(filename)
+    base=url[:base_idx]
+    url_to_download=base + bytes(iri2uri(filename))
+    urllib.urlretrieve(url_to_download, filename)
 
 
 def get_tracks_urls():
