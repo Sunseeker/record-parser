@@ -9,9 +9,8 @@ from httplib2 import iri2uri
 
 def download_track(url, filename):
     print "Retriveing ", filename
-    base_idx = url.find(filename)
-    base=url[:base_idx]
-    url_to_download=base + bytes(iri2uri(filename))
+    track, base = extract_base_and_track(url)
+    url_to_download=base + bytes(iri2uri(track))
     urllib.urlretrieve(url_to_download, filename)
 
 
@@ -31,6 +30,12 @@ def check_for_existence(filename, path=None):
         return True
     else:
         return False
+
+def extract_base_and_track(url):
+    idx = url.rfind('/')+1
+    track = url[idx:]
+    base = url[:idx]
+    return (track, base)
 
 
 def main():
@@ -52,13 +57,12 @@ def main():
     tracks_urls = get_tracks_urls()
     if number_of_tracks != -1:
         tracks_urls = tracks_urls[:int(number_of_tracks)]
-    print "Begin to retrieve %d tracks" % len(tracks_urls)
+    print "Begin to retrieve %d tracks into %s" % (len(tracks_urls), path)
     for url in tracks_urls:
-        idx = url.rfind('/')+1
-        track_name = url[idx:]
-        filename = os.path.join(path, track_name)
-        if check_for_existence(filename) is False:
-            download_track(url, track_name)
+        track, base = extract_base_and_track(url)
+        if check_for_existence(track, path) is False:
+            filename = os.path.join(path, track)
+            download_track(url, filename)
 
 if __name__ == '__main__':
     main()
