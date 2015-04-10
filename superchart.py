@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG,
                     format='[%(levelname)s] (%(threadName)-10s) %(message)s',)
 
 def download_track(url, filename):
-    logging.debug( "Retriveing ", filename)
+    logging.debug( "Retriveing %s", filename)
     track, base = extract_base_and_track(url)
     url_to_download=base + bytes(iri2uri(track))
     urllib.urlretrieve(url_to_download, filename)
